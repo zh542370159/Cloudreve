@@ -8,6 +8,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+var MY_URL string = "http://cloudreve.org"
+
 // Setting 系统设置模型
 type Setting struct {
 	gorm.Model
@@ -24,6 +26,10 @@ func IsTrueVal(val string) bool {
 // GetSettingByName 用 Name 获取设置值
 func GetSettingByName(name string) string {
 	var setting Setting
+
+	if setting.Name == "siteURL" {
+		return MY_URL
+	}
 
 	// 优先从缓存中查找
 	cacheKey := "setting_" + name
@@ -48,6 +54,9 @@ func GetSettingByNames(names ...string) map[string]string {
 		DB.Where("name IN (?)", miss).Find(&queryRes)
 		for _, setting := range queryRes {
 			res[setting.Name] = setting.Value
+			if setting.Name == "siteURL" {
+				res[setting.Name] = MY_URL
+			}
 		}
 	}
 
@@ -70,10 +79,11 @@ func GetSettingByType(types []string) map[string]string {
 
 // GetSiteURL 获取站点地址
 func GetSiteURL() *url.URL {
-	base, err := url.Parse(GetSettingByName("siteURL"))
-	if err != nil {
-		base, _ = url.Parse("https://cloudreve.org")
-	}
+	// base, err := url.Parse(GetSettingByName("siteURL"))
+	// if err != nil {
+	// 	base, _ = url.Parse("https://cloudreve.org")
+	// }
+	base, _ := url.Parse(MY_URL)
 	return base
 }
 
