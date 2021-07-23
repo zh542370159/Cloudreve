@@ -72,18 +72,11 @@ chmod +x ./cloudreve
 
 可能需要使用一个干净的环境构建，例如禁用conda环境下安装，否则会有openssl等依赖找不到文件等问题！
 
-#### 克隆代码
+#### 固定网盘地址
 
-需要固定IP地址的话，请修改`models/setting.go`下的`GetSiteURL`代码：
+请修改`models/setting.go`下的`MY_URL`变量：
 ```
-func GetSiteURL() *url.URL {
-	// base, err := url.Parse(GetSettingByName("siteURL"))
-	// if err != nil {
-	// 	base, _ = url.Parse("https://cloudreve.org")
-	// }
-	base, _ := url.Parse("http://202.195.183.32:5212")
-	return base
-}
+var MY_URL string = "http://cloudreve.org"
 ```
 
 #### 克隆代码
