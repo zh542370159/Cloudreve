@@ -74,6 +74,20 @@ chmod +x ./cloudreve
 
 #### 克隆代码
 
+需要固定IP地址的话，请修改`models/setting.go`下的`GetSiteURL`代码：
+```
+func GetSiteURL() *url.URL {
+	// base, err := url.Parse(GetSettingByName("siteURL"))
+	// if err != nil {
+	// 	base, _ = url.Parse("https://cloudreve.org")
+	// }
+	base, _ := url.Parse("http://202.195.183.32:5212")
+	return base
+}
+```
+
+#### 克隆代码
+
 ```shell
 git clone --recurse-submodules https://github.com/zh542370159/Cloudreve.git
 ```
