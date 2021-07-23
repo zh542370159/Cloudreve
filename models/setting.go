@@ -27,22 +27,22 @@ func IsTrueVal(val string) bool {
 func GetSettingByName(name string) string {
 	var setting Setting
 
-	if setting.Name == "siteURL" {
+	if name == "siteURL" {
 		return MY_URL
+	} else {
+		// 优先从缓存中查找
+		cacheKey := "setting_" + name
+		if optionValue, ok := cache.Get(cacheKey); ok {
+			return optionValue.(string)
+		}
+		// 尝试数据库中查找
+		result := DB.Where("name = ?", name).First(&setting)
+		if result.Error == nil {
+			_ = cache.Set(cacheKey, setting.Value, -1)
+			return setting.Value
+		}
+		return ""
 	}
-
-	// 优先从缓存中查找
-	cacheKey := "setting_" + name
-	if optionValue, ok := cache.Get(cacheKey); ok {
-		return optionValue.(string)
-	}
-	// 尝试数据库中查找
-	result := DB.Where("name = ?", name).First(&setting)
-	if result.Error == nil {
-		_ = cache.Set(cacheKey, setting.Value, -1)
-		return setting.Value
-	}
-	return ""
 }
 
 // GetSettingByNames 用多个 Name 获取设置值
@@ -79,11 +79,10 @@ func GetSettingByType(types []string) map[string]string {
 
 // GetSiteURL 获取站点地址
 func GetSiteURL() *url.URL {
-	// base, err := url.Parse(GetSettingByName("siteURL"))
-	// if err != nil {
-	// 	base, _ = url.Parse("https://cloudreve.org")
-	// }
-	base, _ := url.Parse(MY_URL)
+	base, err := url.Parse(GetSettingByName("siteURL"))
+	if err != nil {
+		base, _ = url.Parse("https://cloudreve.org")
+	}
 	return base
 }
 
